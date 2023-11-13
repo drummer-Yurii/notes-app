@@ -37,6 +37,45 @@ const {
     }
 `, { userId: userId.value });
 
+const {mutate: createNote, onDone: createNoteDone} = useMutation(gql`
+    mutation (
+        $userId: String!, 
+        $title: String!, 
+        $content: String!
+    ) {
+        insert_notes_one(object: {
+            content: $content, 
+            title: $title, 
+            user_id: $userId
+        }) {
+            id
+        }
+    }
+`);
+
+const handleCreateNote = () => {
+    if (!newNote.value.title || !newNote.value.content) {
+        return alert('Please fill in all fields')
+    }
+    createNote({
+        userId: userId.value,
+        title: newNote.value.title,
+        content: newNote.value.content
+    })
+}
+
+createNoteDone(() => {
+    notesRefetch()
+    newNote.value = {
+        title: '',
+        content: '',
+    }
+});
+
+const convertToHTML = content => {
+    return content.replace(/\n/g, '<br />')
+}
+
 const convertToDate = date => {
     return new Date(date).toLocaleString()
 }
@@ -49,7 +88,7 @@ const convertToDate = date => {
             <button @click="logout" class="text-red-500 hover:underline cursor-pointer">Logout</button>
         </div>
 
-        <form @submit.prevent="" class="mb-8">
+        <form @submit.prevent="handleCreateNote" class="mb-8">
             <label class="block mb-4">
                 <span class="block text-sm uppercase mb-2">Title</span>
                 <input 
@@ -83,7 +122,9 @@ const convertToDate = date => {
             >
                 <button class="absolute top-6 right-6 text-red-500 font-bold">Delete</button>
                 <h3 class="font-bold text-2xl mb-4">{{ note.title }}</h3>
-                <p class="text-lg text-gray-500 mb-4">{{ note.content }}</p>
+                <p 
+                    v-html="convertToHTML(note.content)"
+                    class="text-lg text-gray-500 mb-4"></p>
                 <div class="text-sm text-gray-500 italic">{{ convertToDate(note.created) }}</div>
             </div>
         </div>
