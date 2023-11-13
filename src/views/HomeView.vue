@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSignOut, useUserId } from '@nhost/vue';
+import { useMutation, useQuery } from '@vue/apollo-composable';
+import { gql } from '@apollo/client/core';
 
 const router = useRouter();
 const { signOut } = useSignOut();
@@ -16,6 +18,24 @@ const logout = () => {
     signOut()
     router.push('/login')
 }
+
+const { 
+        loading: notesLoadin, 
+        result: notesResult, 
+        refetch: notesRefetch 
+    } = useQuery(gql`
+    query ($userId: String!) {
+        notes (
+            order_by: { created: desc },
+            where: { user_id: { _eq: $userId }}
+        ) {
+            id,
+            title,
+            content,
+            created
+        }
+    }
+`, { userId: userId.value })
 </script>
 
 <template>
