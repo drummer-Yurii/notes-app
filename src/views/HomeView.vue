@@ -24,5 +24,31 @@ const logout = () => {
             <h1 class="text-3xl font-bold">My Notes App</h1>
             <button @click="logout" class="text-red-500 hover:underline cursor-pointer">Logout</button>
         </div>
+
+        <form @submit.prevent="">
+            <label class="block mb-4">
+                <span class="block text-sm uppercase mb-2">Title</span>
+                <input 
+                    type="text" 
+                    v-model="newNote.title" 
+                    placeholder="What's the title?"
+                    class="block w-full text-slate-800 px-4 py-2"
+                />
+            </label>
+            <label class="block mb-4">
+                <span class="block text-sm uppercase mb-2">Content</span>
+                <textarea
+                    v-model="newNote.content" 
+                    placeholder="Write your content"
+                    class="block w-full text-slate-800 px-4 py-2"
+                >
+                </textarea>
+            </label>
+            <input 
+                type="submit" 
+                value="Create note"
+                class="text-green-500 hover:underline cursor-pointer" 
+            />
+        </form>
     </main>
 </template>
