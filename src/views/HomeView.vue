@@ -35,7 +35,11 @@ const {
             created
         }
     }
-`, { userId: userId.value })
+`, { userId: userId.value });
+
+const convertToDate = date => {
+    return new Date(date).toLocaleString()
+}
 </script>
 
 <template>
@@ -45,7 +49,7 @@ const {
             <button @click="logout" class="text-red-500 hover:underline cursor-pointer">Logout</button>
         </div>
 
-        <form @submit.prevent="">
+        <form @submit.prevent="" class="mb-8">
             <label class="block mb-4">
                 <span class="block text-sm uppercase mb-2">Title</span>
                 <input 
@@ -70,5 +74,18 @@ const {
                 class="text-green-500 hover:underline cursor-pointer" 
             />
         </form>
+
+        <div v-if="!notesLoadin">
+            <div 
+                v-for="note in notesResult.notes" 
+                :key="note"
+                class="relative bg-white text-slate-700 rounded-lg p-6 mb-6"
+            >
+                <button class="absolute top-6 right-6 text-red-500 font-bold">Delete</button>
+                <h3 class="font-bold text-2xl mb-4">{{ note.title }}</h3>
+                <p class="text-lg text-gray-500 mb-4">{{ note.content }}</p>
+                <div class="text-sm text-gray-500 italic">{{ convertToDate(note.created) }}</div>
+            </div>
+        </div>
     </main>
 </template>
